@@ -58,14 +58,9 @@ When answering questions:
 5. Emphasize his well-roundedness: academics, leadership, athletics, community service, and creative interests
 6. Highlight qualities that make him a strong candidate for coding high schools: problem-solving skills, self-directed learning, leadership, and diverse interests`
 
-interface Message {
-  role: "user" | "assistant"
-  content: string
-}
-
 export async function POST(req: Request) {
   try {
-    const { messages }: { messages: Message[] } = await req.json()
+    const { messages } = await req.json()
 
     const result = streamText({
       model: openai("gpt-4o-mini"),
@@ -75,7 +70,7 @@ export async function POST(req: Request) {
       temperature: 0.7,
     })
 
-    return result.toTextStreamResponse()
+    return result.toDataStreamResponse()
   } catch (error) {
     console.error("Chat API error:", error)
     return new Response("Error processing chat request", { status: 500 })

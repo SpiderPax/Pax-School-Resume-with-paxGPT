@@ -77,7 +77,10 @@ export function ChatBot() {
           </div>
 
           {/* Input */}
-          <form onSubmit={handleSubmit} className="p-4 border-t border-border">
+          <form onSubmit={(e) => {
+            e.preventDefault()
+            handleSubmit(e)
+          }} className="p-4 border-t border-border">
             <div className="flex gap-2">
               <input
                 value={input}
