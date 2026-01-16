@@ -3,26 +3,16 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
+import { useChat } from "ai/react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { MessageCircle, X, Send } from "lucide-react"
 
 export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false)
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    api: "/api/chat",
   })
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const input = (e.target as any).message.value
-    if (input.trim()) {
-      sendMessage({ text: input })
-      ;(e.target as any).message.value = ""
-    }
-  }
 
   return (
     <>
@@ -68,21 +58,12 @@ export function ChatBot() {
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
-                  {message.parts.map((part, index) => {
-                    if (part.type === "text") {
-                      return (
-                        <p key={index} className="text-sm whitespace-pre-wrap">
-                          {part.text}
-                        </p>
-                      )
-                    }
-                    return null
-                  })}
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                 </div>
               </div>
             ))}
 
-            {status === "in_progress" && (
+            {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-secondary text-secondary-foreground rounded-lg px-4 py-2">
                   <div className="flex space-x-2">
@@ -99,15 +80,16 @@ export function ChatBot() {
           <form onSubmit={handleSubmit} className="p-4 border-t border-border">
             <div className="flex gap-2">
               <input
-                name="message"
+                value={input}
+                onChange={handleInputChange}
                 placeholder="Ask about Paxton..."
                 className="flex-1 px-3 py-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                disabled={status === "in_progress"}
+                disabled={isLoading}
               />
               <Button
                 type="submit"
                 size="icon"
-                disabled={status === "in_progress"}
+                disabled={isLoading}
                 className="bg-primary hover:bg-primary/90"
               >
                 <Send className="h-4 w-4" />

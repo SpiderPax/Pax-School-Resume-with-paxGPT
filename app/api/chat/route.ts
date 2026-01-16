@@ -1,4 +1,5 @@
-import { consumeStream, convertToModelMessages, streamText, type UIMessage } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { streamText } from "ai"
 
 export const maxDuration = 30
 
@@ -57,33 +58,26 @@ When answering questions:
 5. Emphasize his well-roundedness: academics, leadership, athletics, community service, and creative interests
 6. Highlight qualities that make him a strong candidate for coding high schools: problem-solving skills, self-directed learning, leadership, and diverse interests`
 
+interface Message {
+  role: "user" | "assistant"
+  content: string
+}
+
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json()
+  try {
+    const { messages }: { messages: Message[] } = await req.json()
 
-  const prompt = convertToModelMessages([
-    {
-      id: "system",
-      role: "system",
-      parts: [{ type: "text", text: PAXTON_CONTEXT }],
-    },
-    ...messages,
-  ])
+    const result = streamText({
+      model: openai("gpt-4o-mini"),
+      system: PAXTON_CONTEXT,
+      messages,
+      maxTokens: 500,
+      temperature: 0.7,
+    })
 
-  const result = streamText({
-    model: "openai/gpt-4o-mini",
-    prompt,
-    abortSignal: req.signal,
-    maxOutputTokens: 500,
-    temperature: 0.7,
-    apiKey: process.env.OPENAI_API_KEY,
-  })
-
-  return result.toUIMessageStreamResponse({
-    onFinish: async ({ isAborted }) => {
-      if (isAborted) {
-        console.log("[v0] Chat aborted")
-      }
-    },
-    consumeSseStream: consumeStream,
-  })
+    return result.toTextStreamResponse()
+  } catch (error) {
+    console.error("Chat API error:", error)
+    return new Response("Error processing chat request", { status: 500 })
+  }
 }
