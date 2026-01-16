@@ -55,16 +55,33 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json()
 
-    const result = streamText({
+    console.log("Chat request received with messages:", messages.length)
+    console.log("OpenAI API Key configured:", !!process.env.OPENAI_API_KEY)
+
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("OPENAI_API_KEY not set")
+      return new Response("OpenAI API key not configured", { status: 500 })
+    }
+
+    if (!messages || messages.length === 0) {
+      return new Response("No messages provided", { status: 400 })
+    }
+
+    console.log("Using model: gpt-4o-mini with system prompt")
+
+    const result = await streamText({
       model: openai("gpt-4o-mini"),
       system: PAXTON_CONTEXT,
       messages,
       temperature: 0.7,
     })
 
+    console.log("Stream created successfully")
     return result.toTextStreamResponse()
   } catch (error) {
     console.error("Chat API error:", error)
-    return new Response("Error processing chat request", { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error("Full error details:", JSON.stringify(error, null, 2))
+    return new Response(`Error: ${errorMessage}`, { status: 500 })
   }
 }

@@ -50,7 +50,14 @@ export function ChatBot() {
         }),
       })
 
-      if (!response.ok) throw new Error("Failed to get response")
+      console.log("Response status:", response.status)
+      console.log("Response ok:", response.ok)
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error("API error response:", errorText)
+        throw new Error(`API error: ${response.status} - ${errorText}`)
+      }
 
       const reader = response.body?.getReader()
       if (!reader) throw new Error("No response body")
@@ -58,13 +65,18 @@ export function ChatBot() {
       const decoder = new TextDecoder()
       let assistantMessage = ""
 
+      console.log("Starting to read stream...")
+
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
 
         const chunk = decoder.decode(value)
+        console.log("Received chunk:", chunk.substring(0, 100))
         assistantMessage += chunk
       }
+
+      console.log("Stream complete, message length:", assistantMessage.length)
 
       setMessages((prev) => [
         ...prev,
@@ -81,7 +93,7 @@ export function ChatBot() {
         {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          content: "Sorry, I encountered an error. Please try again.",
+          content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ])
     } finally {
