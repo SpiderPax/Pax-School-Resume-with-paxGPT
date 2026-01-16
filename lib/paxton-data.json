@@ -1,0 +1,63 @@
+{
+  "name": "Paxton Parker",
+  "location": "Richmond, VA",
+  "email": "paxparker@protonmail.com",
+  "phone": "(804) 637-4055",
+  "education": {
+    "school": "Central Montessori School in Richmond, VA",
+    "since": "2015",
+    "gpa": {
+      "8thGrade": "4.0",
+      "6thGrade": "3.9",
+      "7thGrade": "3.7"
+    },
+    "completedCourses": ["Algebra I (7th grade - advanced)"],
+    "currentCourses": ["Geometry", "Spanish I"],
+    "montessoriApproach": "Independent time management, self-directed learning, critical thinking, and collaboration"
+  },
+  "academicInterests": [
+    "Mathematics (advanced level)",
+    "Visual Arts (drawing and creative projects)",
+    "Spanish language studies",
+    "Strong skills in time management, critical thinking, and collaboration"
+  ],
+  "leadership": {
+    "currentPositions": ["Candidate for School Vice President"],
+    "pastPositions": ["Former Chess Club Leader"],
+    "involvement": "Active participant in group projects and peer learning in multi-age classroom (Grades 6–8)"
+  },
+  "athletics": [
+    {
+      "sport": "Soccer",
+      "team": "Richmond United (Elite Red 1, U14)",
+      "achievements": ["Voted MVP in first season of travel soccer"],
+      "schedule": "3 practices + 1 game per week, ~30 games per season (Spring–Fall)"
+    },
+    {
+      "sport": "Swimming",
+      "team": "Anirav Riptides",
+      "since": "2023",
+      "details": "Participates in swim meets, developed strong teamwork, discipline, and physical fitness"
+    }
+  ],
+  "community": [
+    "Making meals for the homeless",
+    "Food donations to Feed More",
+    "Helped clean local bus stops",
+    "Volunteered on Native American farms"
+  ],
+  "hobbies": {
+    "interests": [
+      "Drawing and visual arts",
+      "Playing guitar",
+      "Music enthusiast"
+    ],
+    "musicGenres": ["rock", "hip-hop", "soft rock", "surf rock", "reggae"]
+  },
+  "strengths": [
+    "Problem-solving skills",
+    "Self-directed learning",
+    "Leadership",
+    "Well-rounded: academics, leadership, athletics, community service, and creative interests"
+  ]
+}
