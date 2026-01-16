@@ -82,7 +82,7 @@ export function Navigation() {
           <div className="pt-8 border-t border-border">
             <div className="space-y-2 text-xs text-muted-foreground">
               <a href="mailto:paxparker@protonmail.com" className="block hover:text-primary transition-colors">
-                paxparker@protonmail.com
+                pax@paxparker.com
               </a>
               <p>(804) 637-4055</p>
             </div>
