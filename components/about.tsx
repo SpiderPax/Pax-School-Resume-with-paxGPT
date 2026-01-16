@@ -17,7 +17,7 @@ export function About() {
           <p>
             My academic journey has been driven by curiosity and a love for problem-solving. I completed{" "}
             <span className="text-foreground font-medium">Algebra I in 7th grade</span> and am currently enrolled in
-            Geometry and Spanish I, maintaining a strong GPA of 3.9 in 6th grade and 3.7 in 7th grade.
+            Geometry and Spanish I, maintaining a strong GPA of 4.0 currently with3.9 in 6th grade and 3.7 in 7th grade.
           </p>
 
           <p>
@@ -37,7 +37,7 @@ export function About() {
               <span className="text-sm text-muted-foreground">2015 — Present</span>
             </div>
             <div className="mt-4 space-y-1 text-sm text-muted-foreground">
-              <p>• GPA: 3.9 (6th grade), 3.7 (7th grade)</p>
+              <p>• GPA: 4.0 (current), 3.7 (7th grade), 3.9 (6th grade)</p>
               <p>• Completed Algebra I in 7th grade</p>
               <p>• Currently enrolled in Geometry and Spanish I</p>
             </div>

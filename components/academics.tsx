@@ -57,7 +57,7 @@ export function Academics() {
           <ul className="space-y-3 text-muted-foreground">
             <li className="flex items-start">
               <span className="text-primary mr-3">▸</span>
-              <span>Completed Algebra I in 7th grade, demonstrating advanced mathematical aptitude</span>
+              <span>Completed Algebra I in 7th grade, currently enrolled in Geometry, demonstrating advanced mathematical aptitude</span>
             </li>
             <li className="flex items-start">
               <span className="text-primary mr-3">▸</span>
