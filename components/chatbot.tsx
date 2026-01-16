@@ -1,18 +1,93 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
-import { useChat } from "@ai-sdk/react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { MessageCircle, X, Send } from "lucide-react"
 
+interface Message {
+  id: string
+  role: "user" | "assistant"
+  content: string
+}
+
 export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false)
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: "/api/chat",
-  })
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!input.trim() || isLoading) return
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: input,
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+        }),
+      })
+
+      if (!response.ok) throw new Error("Failed to get response")
+
+      const reader = response.body?.getReader()
+      if (!reader) throw new Error("No response body")
+
+      const decoder = new TextDecoder()
+      let assistantMessage = ""
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value)
+        assistantMessage += chunk
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: assistantMessage,
+        },
+      ])
+    } catch (error) {
+      console.error("Chat error:", error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: "Sorry, I encountered an error. Please try again.",
+        },
+      ])
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <>
@@ -49,7 +124,7 @@ export function ChatBot() {
               </div>
             )}
 
-            {messages.map((message) => (
+            {messages.map((message: any) => (
               <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[80%] rounded-lg px-4 py-2 ${
@@ -62,6 +137,7 @@ export function ChatBot() {
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
 
             {isLoading && (
               <div className="flex justify-start">
@@ -77,14 +153,11 @@ export function ChatBot() {
           </div>
 
           {/* Input */}
-          <form onSubmit={(e) => {
-            e.preventDefault()
-            handleSubmit(e)
-          }} className="p-4 border-t border-border">
+          <form onSubmit={handleSubmit} className="p-4 border-t border-border">
             <div className="flex gap-2">
               <input
                 value={input}
-                onChange={handleInputChange}
+                onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about Paxton..."
                 className="flex-1 px-3 py-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 disabled={isLoading}
