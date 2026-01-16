@@ -70,11 +70,12 @@ export async function POST(req: Request) {
   ])
 
   const result = streamText({
-    model: "openai/gpt-5-mini",
+    model: "openai/gpt-4o-mini",
     prompt,
     abortSignal: req.signal,
     maxOutputTokens: 500,
     temperature: 0.7,
+    apiKey: process.env.OPENAI_API_KEY,
   })
 
   return result.toUIMessageStreamResponse({
